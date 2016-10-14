@@ -7,12 +7,12 @@ reg-script = code/scripts/regression-script.R
 
 .PHONY: all data tests eda regression report clean
 
-all: report eda regression
+all: eda regression report
 
 data: 
 	curl -o $(ad) http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv
 
-report: $(reg) report/report.Rmd images/scatterplot-tv-sales.png
+report: $(reg) report/report.Rmd data/correlation-matrix.RData 
 	Rscript -e "library(rmarkdown); render('report/report.Rmd', 'pdf_document')"
 
 eda: $(eda-script) $(ad)
