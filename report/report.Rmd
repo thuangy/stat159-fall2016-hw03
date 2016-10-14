@@ -1,17 +1,17 @@
 ---
-title: "Simple Linear Regression Analysis"
+title: "Multiple Linear Regression Analysis"
 author: Tina Huang
-date: October 7, 2016
+date: October 14, 2016
 output: pdf_document
 ---
 
 # Abstract
 
-This report will reproduce the findings concerning the relationship between TV Budget and Sales in the Advertising.csv dataset, from Chapter 3.1 of an _An Introduction to Statistical Learning_ by Gareth James, Daniela Witten, Trevor Hastie and Robert Tibshirani. 
+This report will reproduce the findings concerning the relationship between TV, Radio, and Newspaper Budgets and Sales from the Advertising.csv dataset, from Chapter 3.2 of an _An Introduction to Statistical Learning_ by Gareth James, Daniela Witten, Trevor Hastie and Robert Tibshirani. 
 
 # Introduction
 
-The purpose of this report is to improve overall sales by determining whether or not sales can be predicted by TV budget. To do this, the relationship between these two variables will be explored through simple linear regression. 
+The purpose of this report is to improve overall sales by determining whether or not sales can be predicted by TV, Radio, and or Newspapers budgets. To do this, the relationship between these variables will be explored through simple linear regression, as well as multiple linear regression. 
 
 # Data
 
@@ -19,14 +19,29 @@ The Advertising.csv dataset contains the TV, Radio, and Newspaper budgets in tho
 
 # Methodology
 
-We assume a roughly linear relationship betwen Sales and TV Budget for the Advertising dataset, and so will use a simple linear model to illustrate this relationship:
+We assume a roughly linear relationship between Sales and TV Budget, Sales and Radio Budget, and Sales and Newspaper Budget for the Advertising dataset, and so will use simple linear models to illustrate this relationships:
 
-Sales = $\beta_0$ + $\beta_1$ TV
+> Sales = $\beta_0$ + $\beta_1$ TV
+>
+> Sales = $\beta_0$ + $\beta_1$ Radio
+>
+> Sales = $\beta_0$ + $\beta_1$ Newspaper
 
 $\beta_0$ and $\beta_1$ represent the intercept and slope of the equation, respectively. To estimate these unknown coefficients, we can minimize the least squares criterion. 
 
-First the summaries and histograms for the distributions of TV budget and Sales are looked at individually. Then the coefficients are estimated, the standard error of these estimates is calculated, and then a t-test is performed to determine the significance of these values. In addition, the residual standard error and R-squared values can be calculated to determine how well the model fits the data. 
+For these simple linear regressions, first the summaries and histograms for the distributions of the variables are looked at individually. Then the coefficients are estimated, the standard error of these estimates is calculated, and then a t-test is performed to determine the significance of these values. In addition, the residual standard error and R-squared values can be calculated to determine how well the model fits the data. 
 
+---
+
+We will also create multiple linear regression model of the form 
+
+> Sales = $\beta_0$ + $\beta_1$ TV + $\beta_2$ Radio + $\beta_3$ Newspaper
+
+to determine the effect of multiple predictors, TV, Radio, and Newspaper budget, on sales. 
+
+As with simple linear regression, the unknown coefficients are estimated using the least squares approach, in which we select values that minimize the residual sum of squares. A correlation matrix will also give us insight into the relationship between the variables. 
+
+To determine if at least one of TV, Radio, and Newspaper budget has an effect on sales, we will find the F-statistic of the model. Like before, to determine how well the model fits the data, the residual standard error and R-squared values will also be calculated. 
 
 # Results
 
@@ -37,15 +52,37 @@ load("../data/regression.Rdata")
 ```
 
 \begin{center}
-  Table 1: Estimating the Regression Coefficients
+  Table 1: Estimating the Regression Coefficients for Sales Onto TV
 \end{center}
 ```{r, echo=FALSE}
-pander(reg_summary, type = 'grid', caption = "Assessing the Fit of the Model")
+pander(tv_reg_summary, type = 'grid', caption = "Assessing the Fit of the Sales Onto TV Model")
 ```
 
-The regression coefficients are estimated in Table 1 above, and we can see that $\beta_0$ and $\beta_1$ are estimated to be `r I(reg_summary$coef[, "Estimate"])` respectively. This means for an increase of $1000 in TV budget, we will see about an additional 47.5 units sold. We can also see that the p-value from performing the t-test is extremely low, indicating that this is a statistically significant value and that there is strong evidence that there is a relationship between TV Budget and Sales. 
+\begin{center}
+  Table 3: Estimating the Regression Coefficients for Sales Onto Radio
+\end{center}
+```{r, echo=FALSE}
+pander(radio_reg_summary, type = 'grid', caption = "Assessing the Fit of the Sales Onto Radio Model")
+```
 
-Looking at Table 2, we see that the model has an R-squared value of `r I(reg_summary$r.squared)`, which indicates a majority of the variability in Sales can be explained by TV Budget, and that the relationship between TV Budget and Sales is roughly linear. The residual standard error(RSE) value of `r I(reg_summary$sigma)` also supports these statements, as it is greater than 1. 
+\begin{center}
+  Table 5: Estimating the Regression Coefficients for Sales Onto Newspaper
+\end{center}
+```{r, echo=FALSE}
+pander(news_reg_summary, type = 'grid', caption = "Assessing the Fit of the Sales Onto Newspaper Model")
+```
+
+The regression coefficients for the Sales onto TV model are estimated in Table 1 above, and we can see that $\beta_0$ and $\beta_1$ are estimated to be `r I(tv_reg_summary$coef[, "Estimate"])` respectively. This means for an increase of $1000 in TV budget, we will see about an additional `r I(unname(tv_reg_summary$coef[, "Estimate"][2]) * 1000)` units sold. We can also see that the p-value from performing the t-test is extremely low, indicating that this is a statistically significant value and that there is strong evidence that there is a relationship between TV Budget and Sales. 
+
+Looking at Table 2, we see that the Sales onto TV model has an R-squared value of `r I(tv_reg_summary$r.squared)`, which indicates a majority of the variability in Sales can be explained by TV Budget, and that the relationship between TV Budget and Sales is roughly linear. The residual standard error (RSE) value of `r I(tv_reg_summary$sigma)` also supports these statements, as it is not too large. 
+
+Similarly for the Sales onto Radio model, in Table 3, we can see that $\beta_0$ and $\beta_1$ are estimated to be `r I(radio_reg_summary$coef[, "Estimate"])` respectively. This means for an increase of $1000 in Radio budget, we will see about an additional `r I(unname(radio_reg_summary$coef[, "Estimate"][2]) * 1000)` units sold. We can also see that the p-value from performing the t-test is also extremely low, indicating that this is a statistically significant value and that there is strong evidence that there is a relationship between Radio Budget and Sales. 
+
+Looking at Table 4, we see that the Sales onto Radio model has an R-squared value of `r I(radio_reg_summary$r.squared)`, which indicates some of the variability in Sales can be explained by Radio Budget. The residual standard error (RSE) value of `r I(radio_reg_summary$sigma)` also supports this statement, as it is not too large but also not too small either. 
+
+Finally for the Sales onto Newspaper model, in Table 5, we can see that $\beta_0$ and $\beta_1$ are estimated to be `r I(news_reg_summary$coef[, "Estimate"])` respectively. This means for an increase of $1000 in Newspaper budget, we will see about an additional `r I(unname(news_reg_summary$coef[, "Estimate"][2]) * 1000)` units sold. We can also see that the p-value from performing the t-test is also low, indicating that this is a statistically significant value and that there is evidence that there is a relationship between Newspaper Budget and Sales. 
+
+Looking at Table 6, we see that the Sales onto Newspaper model has an R-squared value of `r I(news_reg_summary$r.squared)`, which indicates almost none of the variability in Sales can be explained by Newspaper Budget. The residual standard error (RSE) value of `r I(news_reg_summary$sigma)` also supports this statement, as it is not very small. 
 
 ![Sales Vs TV Budget](../images/scatterplot-tv-sales.png)
 \begin{center}

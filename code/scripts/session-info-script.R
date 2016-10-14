@@ -5,6 +5,6 @@ library(rmarkdown)
 library(testthat)
 
 # Write the summaries to output file
-sink("session-info.txt")
+sink("../../session-info.txt")
 sessionInfo()
 sink()

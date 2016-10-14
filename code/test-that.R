@@ -1,1 +1,2 @@
-test_file("tests/test-regression.R")
+library(testthat)
+test_file("code/tests/test-regression.R")

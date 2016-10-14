@@ -12,7 +12,10 @@ all: eda regression report
 data: 
 	curl -o $(ad) http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv
 
-report: $(reg) report/report.Rmd data/correlation-matrix.RData 
+tests:
+	Rscript code/test-that.R
+
+report: $(reg) report/report.Rmd data/correlation-matrix.RData  data/regression.RData images/scatterplot-matrix.png
 	Rscript -e "library(rmarkdown); render('report/report.Rmd', 'pdf_document')"
 
 eda: $(eda-script) $(ad)
