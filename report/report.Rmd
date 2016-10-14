@@ -49,6 +49,7 @@ To determine if at least one of TV, Radio, and Newspaper budget has an effect on
 install.packages("pander", repos="http://cran.rstudio.com/")
 library(pander)
 load("../data/regression.Rdata")
+load("../data/correlation-matrix.RData")
 ```
 
 \begin{center}
@@ -84,13 +85,30 @@ Finally for the Sales onto Newspaper model, in Table 5, we can see that $\beta_0
 
 Looking at Table 6, we see that the Sales onto Newspaper model has an R-squared value of `r I(news_reg_summary$r.squared)`, which indicates almost none of the variability in Sales can be explained by Newspaper Budget. The residual standard error (RSE) value of `r I(news_reg_summary$sigma)` also supports this statement, as it is not very small. 
 
-![Sales Vs TV Budget](../images/scatterplot-tv-sales.png)
+---
+
 \begin{center}
-  Figure 1: Scatterplot of Sales Vs TV Budget with Fitted Regression Line
+  Table 7: Least Squares Regression Coefficient Estimates for Sales Onto TV, Radio, and Newspaper
+\end{center}
+```{r, echo=FALSE}
+pander(mult_regression_summary, type = 'grid', caption = "Assessing the Fit of the Multiple Regression Model")
+```
+
+In Table 8, we can see that the multiple linear regression model seems to fit the data well as the R-squared value is `r I(mult_regression_summary$r.squared)`, which indicates most of the variability in Sales can be explained by these three budgets. In addition, the residual standard error is quite low, with a value of `r I(mult_regression_summary$sigma)`, which also supports this statement. 
+
+We also calculate the F-statistic using equation 3.23 in the text, and obtain the value `r I(unname(mult_regression_summary$fstatistic[1]))`. Since this is a very high value, this supports the above statement as we can conclude that there is strong evidence that there is a relationship between Sales and at least one of these three budgets. 
+
+Looking at Table 7, we are better able to see the individual effects of each of the budgets on sales. As with the simple linear regression, both the coefficients for TV and Radio budgets have extremely low p-values, so there is strong evidence that there is a relationship between these budgets and sales. However with the multiple linear regression, we now see that the coefficient for Newspaper has a high p-value of `r I(unname(mult_regression_summary$coefficients[, 4][4]))`, indicating that even though the simple linear regression found Newspaper budget to be statistically significant, the multiple linear regression model finds strong evidence for us to accept the null hypothesis that there is no relationship between Newspaper budget and Sales.
+
+To explain why the simple linear regression found that there was strong evidence for a relationship between Newspaper budget and Sales but the multiple linear regression is finding the opposite, we can take a look at the correlation matrix for these four variables. 
+
+![Correlation Matrix](../images/scatterplot-matrix.png)
+\begin{center}
+  Figure 1: Correlation Matrix of Sales, TV, Radio, and Newspaper
 \end{center}
 
-Looking at Figure 1, we can see that the fitted regression line roughly encompasses most of the data points, however for low TV budgets, the line does not fit the data as well. The values also tend to fan out as TV budget increases, so while the relationship between the two variables seems to be approximately linear, there may be other non-linear models that could provide a better fit. 
+Looking at Figure 1, we can easily see that TV and Sales are correlated, and that Radio and Sales are correlated as well. However, Newspaper and Sales do not seem to have a clear strong relationship. We can also see though that Newspaper and Radio seems to have slight relationship, albeit a weak one. Since they are somewhat correlated, that means that an increase in Radio budget also tends to have an increase in Newspaper budget. We already know that Radio budget does have an effect on sales, so that's why it appeared that Newspaper budget had an effect on sales, while in reality, individually Newspaper budget and Sales have almost no correlation. 
 
 # Conclusions
 
-Based on our results, we see a very low p-value after performing a t-test to determine whether there's a relationship between Sales and TV Budget, which indicates that there is strong evidence that there is a relationship. The R-squared and RSE values indicate that there is a roughly linear relationship between these two variables. The scatterplot supports this claim, also giving us additional information that the fitted model is not as accurate for low TV budgets. Therefore we can see that we can use the model to roughly predict Sales based on TV Budget, as long as TV Budget is above a certain value (approximately at least 10 thousand dollars). 
+Based on our results, using the multiple linear regression F-statistic, we could see that at least one of TV, Radio, and Newspaper budgets are useful in predicting the response, Sales. Looking at the p-values for the coefficient estimates for these predictors, we see that two of our predictors, TV and Radio budget, are useful in predicting Sales. Newspaper budget, on the other hand, has a very low correlation with Sales. The low residual standard error and high R-squared value tell us that the multiple linear regression model is a good fit for our data. Since it is a good fit, our prediction for Sales will be relatively accurate given TV, Radio and Newspaper budgets. 

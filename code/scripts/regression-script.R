@@ -54,4 +54,4 @@ dev.off()
 
 
 # Save the regression objects to RData file
-save(tv_regression, tv_reg_summary, radio_regression, radio_reg_summary, news_regression, news_reg_summary, file="data/regression.RData")
+save(tv_regression, tv_reg_summary, radio_regression, radio_reg_summary, news_regression, news_reg_summary, mult_regression, mult_regression_summary, file="data/regression.RData")
